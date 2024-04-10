@@ -18,7 +18,7 @@ import androidx.core.view.WindowInsetsCompat;
 public class Colocviul2_MainActivity extends AppCompatActivity {
 
     Button addButton, computeButton;
-    TextView nextTermTextView, allTermsTextView;
+    TextView nextTermTextView, allTermsTextView, showResultTextView;
     ActivityResultLauncher<Intent> activityResultLauncher;
 
     @Override
@@ -30,6 +30,7 @@ public class Colocviul2_MainActivity extends AppCompatActivity {
         computeButton = findViewById(R.id.computeButton);
         nextTermTextView = findViewById(R.id.nextTermView);
         allTermsTextView = findViewById(R.id.allTermsView);
+        showResultTextView = findViewById(R.id.showResultView);
 
         addButton.setOnClickListener(view -> {
             String currentText = nextTermTextView.getText().toString();
@@ -48,6 +49,7 @@ public class Colocviul2_MainActivity extends AppCompatActivity {
             if (result.getResultCode() == RESULT_OK) {
                 int sum = result.getData().getExtras().getInt("sum");
                 Toast.makeText(this, "The activity returned with message OK and sum" + sum, Toast.LENGTH_LONG).show();
+                showResultTextView.setText(String.valueOf(sum));
             } else {
                 Toast.makeText(this, "The activity returned with message CANCEL", Toast.LENGTH_LONG).show();
             }
@@ -66,6 +68,9 @@ public class Colocviul2_MainActivity extends AppCompatActivity {
             if (savedInstanceState.containsKey("allTermsTextView")) {
                 allTermsTextView.setText(savedInstanceState.getString("allTermsTextView"));
             }
+            if (savedInstanceState.containsKey("showResultTextView")) {
+                showResultTextView.setText(savedInstanceState.getString("showResultTextView"));
+            }
         }
     }
 
@@ -74,6 +79,7 @@ public class Colocviul2_MainActivity extends AppCompatActivity {
         super.onSaveInstanceState(savedInstanceState);
         savedInstanceState.putString("nextTermTextView", nextTermTextView.getText().toString());
         savedInstanceState.putString("allTermsTextView", allTermsTextView.getText().toString());
+        savedInstanceState.putString("showResultTextView", showResultTextView.getText().toString());
     }
 
     @Override
@@ -88,6 +94,12 @@ public class Colocviul2_MainActivity extends AppCompatActivity {
             allTermsTextView.setText(savedInstanceState.getString("allTermsTextView"));
         } else {
             allTermsTextView.setText(String.valueOf(0));
+        }
+
+        if (savedInstanceState.containsKey("showResultTextView")) {
+            showResultTextView.setText(savedInstanceState.getString("showResultTextView"));
+        } else {
+            showResultTextView.setText(String.valueOf(0));
         }
     }
 }
