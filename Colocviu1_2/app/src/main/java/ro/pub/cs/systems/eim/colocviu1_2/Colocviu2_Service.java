@@ -21,6 +21,6 @@ public class Colocviu2_Service extends Service {
         Log.d("Colocviu2_Service", "The message is: " + intent.getIntExtra("sum", 0));
         processingThread = new ProcessingThread(intent.getIntExtra("sum", 0), this);
         processingThread.start();
-        return Service.START_REDELIVER_INTENT; // daca serviciul a fost omorat de sistem o sa scheduld pt un restart
+        return Service.START_REDELIVER_INTENT;
     }
 }

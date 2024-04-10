@@ -98,6 +98,7 @@ public class Colocviul2_MainActivity extends AppCompatActivity {
         }
         Log.d("sumFinalCompute", "sumFinalCompute: " + String.valueOf(sumFinalCompute));
         if (sumFinalCompute > 10) {
+            Log.d("sumFinalCompute", "sumFinalCompute > 10: " + String.valueOf(sumFinalCompute));
             Intent intent = new Intent(getApplicationContext(), Colocviu2_Service.class);
             intent.putExtra("sum", sumFinalCompute);
             getApplicationContext().startService(intent);
