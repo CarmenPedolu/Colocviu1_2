@@ -9,6 +9,7 @@ import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -57,5 +58,36 @@ public class Colocviul2_MainActivity extends AppCompatActivity {
             intent.putExtra("allTerms", allTermsTextView.getText().toString());
             activityResultLauncher.launch(intent);
         });
+
+        if (savedInstanceState != null) {
+            if (savedInstanceState.containsKey("nextTermTextView")) {
+                nextTermTextView.setText(savedInstanceState.getString("nextTermTextView"));
+            }
+            if (savedInstanceState.containsKey("allTermsTextView")) {
+                allTermsTextView.setText(savedInstanceState.getString("allTermsTextView"));
+            }
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        savedInstanceState.putString("nextTermTextView", nextTermTextView.getText().toString());
+        savedInstanceState.putString("allTermsTextView", allTermsTextView.getText().toString());
+    }
+
+    @Override
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        if (savedInstanceState.containsKey("nextTermTextView")) {
+            nextTermTextView.setText(savedInstanceState.getString("nextTermTextView"));
+        } else {
+            nextTermTextView.setText(String.valueOf(0));
+        }
+        if (savedInstanceState.containsKey("allTermsTextView")) {
+            allTermsTextView.setText(savedInstanceState.getString("allTermsTextView"));
+        } else {
+            allTermsTextView.setText(String.valueOf(0));
+        }
     }
 }
