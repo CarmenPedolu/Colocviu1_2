@@ -1,19 +1,25 @@
 package ro.pub.cs.systems.eim.colocviu1_2;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-1public class Colocviul2_MainActivity extends AppCompatActivity {
+public class Colocviul2_MainActivity extends AppCompatActivity {
 
     Button addButton, computeButton;
     TextView nextTermTextView, allTermsTextView;
+    ActivityResultLauncher<Intent> activityResultLauncher;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,6 +41,21 @@ import androidx.core.view.WindowInsetsCompat;
                     allTermsTextView.setText(allTermsTextView.getText().toString() + " + " + currentText);
                 }
             }
+        });
+
+        activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+            if (result.getResultCode() == RESULT_OK) {
+                int sum = result.getData().getExtras().getInt("sum");
+                Toast.makeText(this, "The activity returned with message OK and sum" + sum, Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(this, "The activity returned with message CANCEL", Toast.LENGTH_LONG).show();
+            }
+        });
+
+        computeButton.setOnClickListener(view -> {
+            Intent intent = new Intent(getApplicationContext(), Colocviu_2SecondaryActivity.class);
+            intent.putExtra("allTerms", allTermsTextView.getText().toString());
+            activityResultLauncher.launch(intent);
         });
     }
 }
