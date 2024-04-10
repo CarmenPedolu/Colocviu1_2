@@ -1,7 +1,9 @@
 package ro.pub.cs.systems.eim.colocviu1_2;
 
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,6 +22,9 @@ public class Colocviul2_MainActivity extends AppCompatActivity {
     Button addButton, computeButton;
     TextView nextTermTextView, allTermsTextView, showResultTextView;
     ActivityResultLauncher<Intent> activityResultLauncher;
+
+    private IntentFilter intentFilter = new IntentFilter();
+    private MessageBroadcastReceiver messageBroadcastReceiver = new MessageBroadcastReceiver();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +47,7 @@ public class Colocviul2_MainActivity extends AppCompatActivity {
                 } else {
                     allTermsTextView.setText(allTermsTextView.getText().toString() + " + " + currentText);
                 }
+                checkSumAndStartService();
             }
         });
 
@@ -72,8 +78,31 @@ public class Colocviul2_MainActivity extends AppCompatActivity {
                 showResultTextView.setText(savedInstanceState.getString("showResultTextView"));
             }
         }
-    }
 
+        intentFilter.addAction("ro.pub.cs.systems.eim.colocviu1_2.intent.action.SEND_BROADCAST");
+
+        if (showResultTextView.getText().toString().equals("")) {
+            showResultTextView.setText(String.valueOf(0));
+        }
+
+    }
+    private void checkSumAndStartService() {
+        int sumFinalCompute = 0;
+        String[] terms = allTermsTextView.getText().toString().split("\\+");
+        for (String term : terms) {
+            try {
+                sumFinalCompute += Integer.parseInt(term.trim());
+            } catch (NumberFormatException e) {
+                // daca nu e numar, ignoram
+            }
+        }
+        Log.d("sumFinalCompute", "sumFinalCompute: " + String.valueOf(sumFinalCompute));
+        if (sumFinalCompute > 10) {
+            Intent intent = new Intent(getApplicationContext(), Colocviu2_Service.class);
+            intent.putExtra("sum", sumFinalCompute);
+            getApplicationContext().startService(intent);
+        }
+    }
     @Override
     protected void onSaveInstanceState(@NonNull Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
@@ -101,5 +130,23 @@ public class Colocviul2_MainActivity extends AppCompatActivity {
         } else {
             showResultTextView.setText(String.valueOf(0));
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        registerReceiver(messageBroadcastReceiver, intentFilter);
+    }
+
+    @Override
+    protected void onPause() {
+        unregisterReceiver(messageBroadcastReceiver);
+        super.onPause();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(messageBroadcastReceiver);
     }
 }
